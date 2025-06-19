@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Financial Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .summary-card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .result-positive {
+            color: #10B981;
+        }
+        .result-negative {
+            color: #EF4444;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 antialiased">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Financial Performance Calculator</h1>
+            <p class="mt-2 text-md text-gray-600">Adjust the values below to dynamically calculate your business balance.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Input Controls Column -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-2xl font-bold text-gray-700 mb-6 border-b pb-3">Inputs</h2>
+
+                <!-- Main Inputs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="totalIncome" class="block text-sm font-medium text-gray-700">Total Income</label>
+                        <input type="number" id="totalIncome" value="234943" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    </div>
+                    <div>
+                        <label for="timePeriod" class="block text-sm font-medium text-gray-700">Time Period (Months)</label>
+                        <input type="number" id="timePeriod" value="7" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    </div>
+                </div>
+
+                <!-- Expenses -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold text-gray-700">Core Expenses</h3>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="serviceExpense" class="block text-sm font-medium text-gray-700">Total Service Costs</label>
+                            <input type="number" id="serviceExpense" value="111697" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                        </div>
+                        <div>
+                            <label for="managerSalary" class="block text-sm font-medium text-gray-700">Manager's Monthly Salary</label>
+                            <input type="number" id="managerSalary" value="5000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                        </div>
+                        <div>
+                            <label for="managerIncentive" class="block text-sm font-medium text-gray-700">Manager Incentive (%)</label>
+                            <input type="number" id="managerIncentive" value="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                        </div>
+                         <div>
+                            <label for="staffSalary" class="block text-sm font-medium text-gray-700">Full Staff Monthly Salary</label>
+                            <input type="number" id="staffSalary" value="24000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Incentives -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold text-gray-700">Additional Incentives / Expenses</h3>
+                    <div id="additional-expenses-container" class="mt-4 space-y-4">
+                        <!-- Dynamic expense items will be added here -->
+                    </div>
+                    <button id="add-expense-btn" class="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">+ Add Expense Item</button>
+                </div>
+
+
+                <!-- Staffing Scenario -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold text-gray-700">Staffing Scenario</h3>
+                    <fieldset class="mt-4">
+                        <legend class="sr-only">Staffing Scenario</legend>
+                        <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                            <div class="flex items-center">
+                                <input id="staff_full" name="staffing_scenario" type="radio" value="full" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <label for="staff_full" class="ml-3 block text-sm font-medium text-gray-700">Full Staff</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="staff_half" name="staffing_scenario" type="radio" value="half" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <label for="staff_half" class="ml-3 block text-sm font-medium text-gray-700">Half Staff</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="staff_none" name="staffing_scenario" type="radio" value="none" checked class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                <label for="staff_none" class="ml-3 block text-sm font-medium text-gray-700">Without Staff</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <!-- Summary Column -->
+            <div class="lg:col-span-1">
+                <div class="summary-card sticky top-8">
+                    <h2 class="text-2xl font-bold text-gray-700 mb-6 border-b pb-3">Summary</h2>
+                    <div class="space-y-4 text-gray-600">
+                        <!-- Income -->
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium">Total Income</span>
+                            <span id="summary_income" class="font-semibold text-gray-900"></span>
+                        </div>
+                        <hr>
+                        <!-- Expenses Breakdown -->
+                        <div class="space-y-2 pt-2">
+                             <p class="font-medium text-gray-800 mb-2">Expenses Breakdown:</p>
+                             <div class="flex justify-between text-sm"><span>Service Costs:</span> <span id="summary_service"></span></div>
+                             <div class="flex justify-between text-sm"><span>Manager Salary:</span> <span id="summary_manager_sal"></span></div>
+                             <div class="flex justify-between text-sm"><span>Manager Incentive:</span> <span id="summary_manager_inc"></span></div>
+                             <div class="flex justify-between text-sm"><span>Staff Salary:</span> <span id="summary_staff_sal"></span></div>
+                             <div id="summary-additional-expenses" class="space-y-2"></div>
+                        </div>
+                        <hr>
+                        <!-- Total Expenses -->
+                        <div class="flex justify-between items-center text-red-600">
+                            <span class="font-medium">Total Expenses</span>
+                            <span id="summary_total_expenses" class="font-semibold"></span>
+                        </div>
+                        <hr>
+                        <!-- Final Balance -->
+                        <div class="flex justify-between items-center text-xl mt-4">
+                            <span class="font-bold text-gray-800">Final Balance</span>
+                            <span id="summary_balance" class="font-bold"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DOM Element Selection ---
+        const inputs = document.querySelectorAll('input[type="number"], input[type="radio"]');
+        
+        const totalIncomeEl = document.getElementById('totalIncome');
+        const timePeriodEl = document.getElementById('timePeriod');
+        const serviceExpenseEl = document.getElementById('serviceExpense');
+        const managerSalaryEl = document.getElementById('managerSalary');
+        const managerIncentiveEl = document.getElementById('managerIncentive');
+        const staffSalaryEl = document.getElementById('staffSalary');
+        const addExpenseBtn = document.getElementById('add-expense-btn');
+        const additionalExpensesContainer = document.getElementById('additional-expenses-container');
+
+        const summaryIncomeEl = document.getElementById('summary_income');
+        const summaryServiceEl = document.getElementById('summary_service');
+        const summaryManagerSalEl = document.getElementById('summary_manager_sal');
+        const summaryManagerIncEl = document.getElementById('summary_manager_inc');
+        const summaryStaffSalEl = document.getElementById('summary_staff_sal');
+        const summaryAdditionalExpensesEl = document.getElementById('summary-additional-expenses');
+        const summaryTotalExpensesEl = document.getElementById('summary_total_expenses');
+        const summaryBalanceEl = document.getElementById('summary_balance');
+
+        // --- Core Calculation Logic ---
+        function calculateAndDisplay() {
+            // 1. Get all input values
+            const totalIncome = parseFloat(totalIncomeEl.value) || 0;
+            const timePeriod = parseFloat(timePeriodEl.value) || 0;
+            const serviceExpense = parseFloat(serviceExpenseEl.value) || 0;
+            const managerMonthlySalary = parseFloat(managerSalaryEl.value) || 0;
+            const managerIncentivePercent = parseFloat(managerIncentiveEl.value) || 0;
+            const staffMonthlySalary = parseFloat(staffSalaryEl.value) || 0;
+            const staffingScenario = document.querySelector('input[name="staffing_scenario"]:checked').value;
+
+            // 2. Perform calculations
+            const totalManagerSalary = managerMonthlySalary * timePeriod;
+            const totalManagerIncentive = totalIncome * (managerIncentivePercent / 100);
+            
+            let totalStaffSalary = 0;
+            if (staffingScenario === 'full') {
+                totalStaffSalary = staffMonthlySalary * timePeriod;
+            } else if (staffingScenario === 'half') {
+                totalStaffSalary = (staffMonthlySalary / 2) * timePeriod;
+            }
+            
+            // Calculate additional expenses
+            let totalAdditionalExpenses = 0;
+            const additionalExpenseInputs = document.querySelectorAll('.additional-expense-value');
+            additionalExpenseInputs.forEach(input => {
+                totalAdditionalExpenses += parseFloat(input.value) || 0;
+            });
+
+            const totalExpenses = serviceExpense + totalManagerSalary + totalManagerIncentive + totalStaffSalary + totalAdditionalExpenses;
+            const finalBalance = totalIncome - totalExpenses;
+
+            // 3. Display results in summary
+            summaryIncomeEl.textContent = formatCurrency(totalIncome);
+            summaryServiceEl.textContent = formatCurrency(serviceExpense);
+            summaryManagerSalEl.textContent = formatCurrency(totalManagerSalary);
+            summaryManagerIncEl.textContent = formatCurrency(totalManagerIncentive);
+            summaryStaffSalEl.textContent = formatCurrency(totalStaffSalary);
+            summaryTotalExpensesEl.textContent = formatCurrency(totalExpenses);
+            
+            // Display additional expenses breakdown
+            summaryAdditionalExpensesEl.innerHTML = ''; // Clear previous
+            const additionalExpenseItems = document.querySelectorAll('.additional-expense-item');
+            additionalExpenseItems.forEach(item => {
+                const name = item.querySelector('.additional-expense-name').value || 'Unnamed Expense';
+                const value = parseFloat(item.querySelector('.additional-expense-value').value) || 0;
+                if (value > 0) {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between text-sm';
+                    div.innerHTML = `<span>${name}:</span> <span>${formatCurrency(value)}</span>`;
+                    summaryAdditionalExpensesEl.appendChild(div);
+                }
+            });
+
+
+            summaryBalanceEl.textContent = formatCurrency(finalBalance);
+
+            // 4. Style the final balance based on profit/loss
+            summaryBalanceEl.classList.toggle('result-positive', finalBalance >= 0);
+            summaryBalanceEl.classList.toggle('result-negative', finalBalance < 0);
+        }
+
+        // --- Helper Functions ---
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 2
+            }).format(value);
+        }
+        
+        // --- Dynamic "Add Expense" Functionality ---
+        let expenseId = 0;
+        function addExpenseItem() {
+            expenseId++;
+            const div = document.createElement('div');
+            div.className = 'additional-expense-item flex items-center gap-2';
+            div.innerHTML = `
+                <input type="text" placeholder="e.g., Rashid's Incentive" class="additional-expense-name flex-grow block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                <input type="number" placeholder="0" class="additional-expense-value block w-1/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                <button class="remove-expense-btn text-red-500 hover:text-red-700 p-1 rounded-full">&times;</button>
+            `;
+            additionalExpensesContainer.appendChild(div);
+            
+            // Add event listener to the new inputs and remove button
+            div.querySelector('.additional-expense-name').addEventListener('input', calculateAndDisplay);
+            div.querySelector('.additional-expense-value').addEventListener('input', calculateAndDisplay);
+            div.querySelector('.remove-expense-btn').addEventListener('click', () => {
+                div.remove();
+                calculateAndDisplay();
+            });
+
+            calculateAndDisplay();
+        }
+
+        // --- Event Listeners ---
+        inputs.forEach(input => input.addEventListener('input', calculateAndDisplay));
+        addExpenseBtn.addEventListener('click', addExpenseItem);
+
+        // --- Initial Calculation on Load ---
+        window.addEventListener('load', () => {
+             // Set the staffing scenario based on the initial data
+             const balanceWithHalfStaff = -7501.15;
+             const balanceWithFullStaff = -91501.15;
+             const balanceWithoutStaff = 76498.85; // From user's note
+             
+             // This is a rough approximation to match one of the user's scenarios initially.
+             // Here we select 'without staff' to match one of the provided balance figures.
+             document.getElementById('staff_none').checked = true;
+
+             calculateAndDisplay();
+        });
+
+    </script>
+
+</body>
+</html>
